@@ -61,7 +61,7 @@ hdiutil attach openwrt-dev-env.dmg
 
 Then run:
 ```zsh
-docker run -v /Volumes/openwrt-dev-env:/home/user -it openwrt_builder /bin/bash
+docker --privileged run -v /Volumes/openwrt-dev-env:/home/user -it openwrt_builder /bin/bash
 ```
 
 Inside the container shell create a image file that will be formatted in ext4 then mounted (thanks to [HowellBP](https://github.com/HowellBP/ext4-on-macos-using-docker) for the inspiration):
@@ -72,8 +72,8 @@ dd if=/dev/zero of=ext4openwrtfs.img bs=1G count=0 seek=60 # set "seek=" to howe
 mkfs.ext4 ext4openwrtfs.img # create filesystem
 
 mkdir ./openwrt-fs # create mount folder
-losetup -fP --show ext4openwrtfs.img # this will return a /dev/loop ID, e.g. /dev/loop1, change line below with the correct one
-sudo mount /dev/loop1 ./openwrt-fs # mount support folder
+sudo losetup -fP --show ext4openwrtfs.img # this will return a /dev/loop ID, e.g. /dev/loop1, change line below with the correct one
+sudo mount /dev/loop{0,1} ./openwrt-fs # mount support folder
 sudo chown -R user:user ./openwrt-fs # change ownership to user
 cd ./openwrt-fs # $(pwd) should be /home/user/openwrt-fs
 ```
